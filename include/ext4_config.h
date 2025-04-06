@@ -41,10 +41,6 @@
 extern "C" {
 #endif
 
-#if !CONFIG_USE_DEFAULT_CFG
-#include "generated/ext4_config.h"
-#endif
-
 /*****************************************************************************/
 
 #define F_SET_EXT2 2
