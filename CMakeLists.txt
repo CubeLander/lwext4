@@ -7,9 +7,10 @@ cmake_minimum_required(VERSION 3.4)
 # 设置 RISC-V 交叉编译工具链
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR riscv64)
-set(CMAKE_C_COMPILER riscv64-unknown-elf-gcc)
-set(CMAKE_CXX_COMPILER riscv64-unknown-elf-g++)
-set(CMAKE_ASM_COMPILER riscv64-unknown-elf-gcc)
+# riscv64-unknown-elf
+set(CMAKE_C_COMPILER riscv64-linux-gnu-gcc)
+set(CMAKE_CXX_COMPILER riscv64-linux-gnu-g++)
+set(CMAKE_ASM_COMPILER riscv64-linux-gnu-gcc)
 
 # 设置编译标志，使其与内核编译标志兼容
 # 修改 CMAKE_C_FLAGS，添加更多限制标准库的标志
@@ -19,7 +20,7 @@ set(CMAKE_C_FLAGS "-Wall -fno-builtin -nostdlib -nodefaultlibs -nostartfiles -mc
 set(BUILD_SHARED_LIBS OFF)
 
 include_directories(include)
-include_directories(${PROJECT_BINARY_DIR}/include)
+include_directories(${CMAKE_SOURCE_DIR}/include)
 
 # 移除不需要的块设备，使用 none 类型
 set(BLOCKDEV_TYPE none)
@@ -61,6 +62,13 @@ endif()
 set_target_properties(lwext4 PROPERTIES 
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
     OUTPUT_NAME "lwext4"
+)
+
+# 为 lwext4 设置正确的包含目录
+target_include_directories(lwext4 PUBLIC
+    ${CMAKE_SOURCE_DIR}/vendor/musl/include
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/vendor/lwext4/include
 )
 
 # DISTRIBUTION 相关设置保持不变
